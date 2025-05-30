@@ -1,7 +1,9 @@
 <!-- BEGIN_TF_DOCS -->
-# Non-retrievable password without rotation example
+# Non-retrievable password with rotation example
 
-This deploys a non-retrievable ephemeral password without TTL. Each time you read the password, it will be regenerated, and the`value_wo_version` will only increase when password generation settings has been changed.
+This deploys a non-retrievable ephemeral password with a 1 hour TTL.
+
+Changing time-rotation or password generation settings will cause regeneration of the value\_wo\_version, which leads to an update of the downstream resources.
 
 ```hcl
 terraform {
@@ -79,7 +81,10 @@ module "non_retrievable_password" {
 
   enable_telemetry = false
   password = {
-    length = 19
+    length = 20
+  }
+  time_rotating = {
+    rotation_hours = 1
   }
 }
 
@@ -117,17 +122,7 @@ No required inputs.
 
 ## Optional Inputs
 
-The following input variables are optional (have default values):
-
-### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
-
-Description: This variable controls whether or not telemetry is enabled for the module.  
-For more information see <https://aka.ms/avm/telemetryinfo>.  
-If it is set to false, then no telemetry will be collected.
-
-Type: `bool`
-
-Default: `true`
+No optional inputs.
 
 ## Outputs
 

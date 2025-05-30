@@ -1,7 +1,7 @@
 <!-- BEGIN_TF_DOCS -->
 # Non-retrievable password without rotation example
 
-This deploys a non-retrievable ephemeral password without TTL. Each time you read the password, it will be regenerated, and the`value_wo_version` will only increase when password generation settings has been changed.
+This deploys a non-retrievable ephemeral private key without TTL. Each time you read the key data, it will be regenerated, and the`value_wo_version` will only increase when private key generation settings has been changed.
 
 ```hcl
 terraform {
@@ -74,20 +74,21 @@ resource "azurerm_key_vault" "example" {
   }
 }
 
-module "non_retrievable_password" {
+module "non_retrievable_private_key" {
   source = "../../"
 
   enable_telemetry = false
-  password = {
-    length = 19
+  private_key = {
+    algorithm = "RSA"
+    rsa_bits  = 2048
   }
 }
 
-resource "azurerm_key_vault_secret" "non_retrievable_password" {
+resource "azurerm_key_vault_secret" "non_retrievable_private_key" {
   key_vault_id     = azurerm_key_vault.example.id
   name             = "non-retrievable-password"
-  value_wo         = module.non_retrievable_password.password_result
-  value_wo_version = module.non_retrievable_password.value_wo_version
+  value_wo         = module.non_retrievable_private_key.non_retrievable_public_key_openssh
+  value_wo_version = module.non_retrievable_private_key.value_wo_version
 }
 ```
 
@@ -105,7 +106,7 @@ The following requirements are needed by this module:
 The following resources are used by this module:
 
 - [azurerm_key_vault.example](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault) (resource)
-- [azurerm_key_vault_secret.non_retrievable_password](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) (resource)
+- [azurerm_key_vault_secret.non_retrievable_private_key](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/key_vault_secret) (resource)
 - [azurerm_resource_group.example](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
 - [random_string.id](https://registry.terraform.io/providers/hashicorp/random/3.7.2/docs/resources/string) (resource)
 - [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) (data source)
@@ -137,7 +138,7 @@ No outputs.
 
 The following Modules are called:
 
-### <a name="module_non_retrievable_password"></a> [non\_retrievable\_password](#module\_non\_retrievable\_password)
+### <a name="module_non_retrievable_private_key"></a> [non\_retrievable\_private\_key](#module\_non\_retrievable\_private\_key)
 
 Source: ../../
 
